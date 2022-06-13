@@ -9,7 +9,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import pandas as pd
 
-from astroML.time_series import lomb_scargle, lomb_scargle_BIC, lomb_scargle_bootstrap
+# from astroML.time_series import lomb_scargle, lomb_scargle_BIC, lomb_scargle_bootstrap
 import feets
 
 
@@ -83,19 +83,26 @@ def process_directory(input_dir: str) -> None:
     # Recursively search for all light curves in the input directory
     lc_files = glob.glob(f"{input_dir}/**/*.lc", recursive=True)
 
+    output_data = []
     # Load data and save results
     for i, f in enumerate(lc_files):
         stage, vtype, fname = f.split("/")[-3:]
         df = pd.read_csv(f, names=COLNAMES[stage], sep=SEPARATOR[stage]).dropna(
             how="all"
         )
-        
+
         time, mag, error = [df[col].values for col in FEET_COLUMNS[stage]]
-        extracted_features_dict = extract_features(time, mag, error)
+        row_dict = extract_features(time, mag, error)
+        row_dict["object_id"] = fname
+        row_dict["type"] = vtype
+
+        output_data.append(row_dict)
 
         # Stop at X iterations. For testing purposes only.
-        if i == 0:
+        if i == -1:
             break
+
+    pd.DataFrame(output_data).to_csv("outputs/features.csv", index_col=False)
 
 
 def main() -> None:
