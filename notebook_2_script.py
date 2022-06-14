@@ -83,7 +83,7 @@ def process_directory(input_dir: str) -> None:
     # Recursively search for all light curves in the input directory
     lc_files = glob.glob(f"{input_dir}/**/*.lc", recursive=True)
 
-    output_data = []
+    list_of_features = []
     # Load data and save results
     for i, f in enumerate(lc_files):
         stage, vtype, fname = f.split("/")[-3:]
@@ -92,17 +92,17 @@ def process_directory(input_dir: str) -> None:
         )
 
         time, mag, error = [df[col].values for col in FEET_COLUMNS[stage]]
-        row_dict = extract_features(time, mag, error)
-        row_dict["object_id"] = fname
-        row_dict["type"] = vtype
+        extracted_features = extract_features(time, mag, error)
+        extracted_features["object_id"] = fname.replace(".lc", "")
+        extracted_features["type"] = vtype
 
-        output_data.append(row_dict)
+        list_of_features.append(extracted_features)
 
         # Stop at X iterations. For testing purposes only.
         if i == -1:
             break
 
-    pd.DataFrame(output_data).to_csv("outputs/features.csv", index_col=False)
+    pd.DataFrame(list_of_features).to_csv("outputs/features.csv")
 
 
 def main() -> None:
