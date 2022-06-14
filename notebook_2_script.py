@@ -102,7 +102,7 @@ def process_directory(input_dir: str) -> None:
         if i == -1:
             break
 
-    pd.DataFrame(list_of_features).to_csv("outputs/features.csv")
+    pd.DataFrame(list_of_features).to_csv("outputs/nb2/features.csv")
 
 
 def main() -> None:
