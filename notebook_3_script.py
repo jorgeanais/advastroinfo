@@ -41,9 +41,18 @@ def Anderson_Darling_feature(array: np.ndarray) -> float:
     return r.statistic
 
 
-def J_Stetson_index(mag: np.ndarray, error: np.ndarray) -> float:
-    """Stetson (1996)"""
+def Stetson_K_index(mag: np.ndarray, error: np.ndarray) -> float:
+    """Robust measure of the kurtosis of the magnitude histogram. Stetson (1996)"""
     
+    n = len(mag)
+    N = n  # (?)
+    bias = np.sqrt(n / (n - 1.))
+    mean_mag = np.mean(mag)
+    
+    delta = bias * (mag - mean_mag) / error
+    return np.sum(np.abs(delta)) / np.sqrt(np.sum(np.power(delta, 2))) / np.sqrt(N)
+    
+
 
 def process_directory(input_dir: str) -> None:
     """
