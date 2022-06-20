@@ -11,3 +11,6 @@ Folders `_data` and `outputs` are not included in this repository due to its lar
 3. `notebook_2.ipynb`: Light curve features (I): Fourier transformation, Lomb-Scargle Periodogram, and the feature extraction from the `feets` package
 4. `notebook_2_script.py`: Python script to extract features for all stars from the TESS sample.
 5. `notebook_3.ipynb`: Light curve features (II)
+6. `notebook_4.ipynb`: Recap
+
+
