@@ -31,32 +31,44 @@ def extract_features(
     """
     EX_FEATURE_LIST = ["AndersonDarling", "StetsonK", "StetsonK_AC"]
 
-    fs = feets.FeatureSpace(data=['time', 'magnitude', 'error'], exclude=EX_FEATURE_LIST)
+    fs = feets.FeatureSpace(
+        data=["time", "magnitude", "error"], exclude=EX_FEATURE_LIST
+    )
     features, values = fs.extract(time, magnitude, error)
-    return dict(zip(features, values))
+    output = dict(zip(features, values))
+
+    # Add missing features
+    output["Anderson_Darling_"] = Anderson_Darling_feature(magnitude)
+    output["Stetson_K_"] = Stetson_K_index(magnitude, error)
+
+    return output
 
 
-def Anderson_Darling_feature(array: np.ndarray) -> float:
-    r = stats.anderson(array)
+def Anderson_Darling_feature(mag: np.ndarray) -> float:
+    """
+    Anderson-Darling statistical test of whether a given sample of data is drawn from
+    a given probability distribution.
+    """
+    r = stats.anderson(mag)
     return r.statistic
 
 
 def Stetson_K_index(mag: np.ndarray, error: np.ndarray) -> float:
     """Robust measure of the kurtosis of the magnitude histogram. Stetson (1996)"""
-    
+
     n = len(mag)
     N = n  # (?)
-    bias = np.sqrt(n / (n - 1.))
+    bias = np.sqrt(n / (n - 1.0))
     mean_mag = np.mean(mag)
-    
+
     delta = bias * (mag - mean_mag) / error
     return np.sum(np.abs(delta)) / np.sqrt(np.sum(np.power(delta, 2))) / np.sqrt(N)
-    
 
 
-def process_directory(input_dir: str) -> None:
+def process_directory(input_dir: str, max_files: int = -1) -> None:
     """
-    Process all light curves in a given folder.
+    Process all light curves in a given folder. 
+    `max_files` is the maximum number of files to process. If -1, there is no limit.
     """
 
     COLNAMES = {
@@ -89,6 +101,7 @@ def process_directory(input_dir: str) -> None:
     # Load data and save results
     for i, f in enumerate(lc_files):
         stage, vtype, fname = f.split("/")[-3:]
+        print(stage, vtype, fname)
         df = pd.read_csv(f, names=COLNAMES[stage], sep=SEPARATOR[stage]).dropna(
             how="all"
         )
@@ -101,10 +114,11 @@ def process_directory(input_dir: str) -> None:
         list_of_features.append(extracted_features)
 
         # Stop at X iterations. For testing purposes only.
-        if i == -1:
+        if i == max_files:
             break
-
-    pd.DataFrame(list_of_features).to_csv("outputs/nb3/features_.csv")
+    
+    dirname = input_dir.split("/")[-1]
+    pd.DataFrame(list_of_features).to_csv(f"outputs/nb3/features_{dirname}.csv", index=False)
 
 
 def main() -> None:
