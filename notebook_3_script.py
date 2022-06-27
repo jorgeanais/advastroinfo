@@ -34,8 +34,12 @@ def extract_features(
     fs = feets.FeatureSpace(
         data=["time", "magnitude", "error"], exclude=EX_FEATURE_LIST
     )
-    features, values = fs.extract(time, magnitude, error)
-    output = dict(zip(features, values))
+    try:
+        features, values = fs.extract(time, magnitude, error)
+        output = dict(zip(features, values))
+    except Exception as e:
+        print(e)
+        output = {}
 
     # Add missing features
     output["Anderson_Darling_"] = Anderson_Darling_feature(magnitude)
