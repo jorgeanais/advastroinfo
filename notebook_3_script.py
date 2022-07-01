@@ -3,12 +3,13 @@ Perform fourier transformation, lomb-Scargle Periodogram,
 and the feature extraction from the feets package on all
 stars from the TESS sample.
 """
+
 import glob
-from tkinter import SEPARATOR
+import multiprocessing as mp
 import numpy as np
-from matplotlib import pyplot as plt
 import pandas as pd
 from scipy import stats
+
 
 # from astroML.time_series import lomb_scargle, lomb_scargle_BIC, lomb_scargle_bootstrap
 import feets
@@ -29,7 +30,7 @@ def extract_features(
     """
     Extract features from the feets package.
     """
-    EX_FEATURE_LIST = ["AndersonDarling", "StetsonK", "StetsonK_AC"]
+    EX_FEATURE_LIST = []  # "AndersonDarling", "StetsonK", "StetsonK_AC"
 
     fs = feets.FeatureSpace(
         data=["time", "magnitude", "error"], exclude=EX_FEATURE_LIST
@@ -71,7 +72,7 @@ def Stetson_K_index(mag: np.ndarray, error: np.ndarray) -> float:
 
 def process_directory(input_dir: str, max_files: int = -1) -> None:
     """
-    Process all light curves in a given folder. 
+    Process all light curves in a given folder.
     `max_files` is the maximum number of files to process. If -1, there is no limit.
     """
 
@@ -98,6 +99,8 @@ def process_directory(input_dir: str, max_files: int = -1) -> None:
         "_TESS_lightcurves_outliercleaned": ["JD", "mag", "err"],
     }
 
+    NANVALUES = ["*********", "********", "9.999999", "NaN"]
+
     # Recursively search for all light curves in the input directory
     lc_files = glob.glob(f"{input_dir}/**/*.lc", recursive=True)
 
@@ -106,9 +109,13 @@ def process_directory(input_dir: str, max_files: int = -1) -> None:
     for i, f in enumerate(lc_files):
         stage, vtype, fname = f.split("/")[-3:]
         print(stage, vtype, fname)
-        df = pd.read_csv(f, names=COLNAMES[stage], sep=SEPARATOR[stage]).dropna(
-            how="all"
-        )
+        df = pd.read_csv(
+            f,
+            names=COLNAMES[stage],
+            sep=SEPARATOR[stage],
+            dtype=np.float64,
+            na_values=NANVALUES,
+        ).dropna(how="all")
 
         time, mag, error = [df[col].values for col in FEET_COLUMNS[stage]]
         extracted_features = extract_features(time, mag, error)
@@ -120,13 +127,29 @@ def process_directory(input_dir: str, max_files: int = -1) -> None:
         # Stop at X iterations. For testing purposes only.
         if i == max_files:
             break
-    
+
     dirname = input_dir.split("/")[-1]
-    pd.DataFrame(list_of_features).to_csv(f"outputs/nb3/features_{dirname}.csv", index=False)
+    pd.DataFrame(list_of_features).to_csv(
+        f"outputs/nb3/features_{dirname}.csv", index=False
+    )
 
 
 def main() -> None:
-    process_directory("_data/_TESS_lightcurves_outliercleaned")
+
+    """
+    Extract features for all the files inside the respective folders (each directory is runned as an independent process)
+    """
+
+    folders = [
+        "_data/_TESS_lightcurves_raw",
+        "_data/_TESS_lightcurves_median_after_detrended",
+        "_data/_TESS_lightcurves_outliercleaned",
+    ]
+
+    # process_directory("_data/_TESS_lightcurves_raw", max_files=-1)
+
+    with mp.Pool(3) as pool:
+        pool.map(process_directory, folders)
 
 
 if __name__ == "__main__":
