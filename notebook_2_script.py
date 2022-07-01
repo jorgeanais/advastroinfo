@@ -80,6 +80,8 @@ def process_directory(input_dir: str) -> None:
         "_TESS_lightcurves_outliercleaned": ["JD", "mag", "err"],
     }
 
+    NANVALUES = ["*********", "********", "9.999999", "NaN"]
+
     # Recursively search for all light curves in the input directory
     lc_files = glob.glob(f"{input_dir}/**/*.lc", recursive=True)
 
@@ -87,9 +89,13 @@ def process_directory(input_dir: str) -> None:
     # Load data and save results
     for i, f in enumerate(lc_files):
         stage, vtype, fname = f.split("/")[-3:]
-        df = pd.read_csv(f, names=COLNAMES[stage], sep=SEPARATOR[stage]).dropna(
-            how="all"
-        )
+        df = pd.read_csv(
+            f,
+            names=COLNAMES[stage],
+            sep=SEPARATOR[stage],
+            dtype=np.float64,
+            na_values=NANVALUES,
+        ).dropna(how="all")
 
         time, mag, error = [df[col].values for col in FEET_COLUMNS[stage]]
         extracted_features = extract_features(time, mag, error)
