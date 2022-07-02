@@ -115,7 +115,7 @@ def process_directory(input_dir: str, max_files: int = -1) -> None:
             sep=SEPARATOR[stage],
             dtype=np.float64,
             na_values=NANVALUES,
-        ).dropna(how="all")
+        ).dropna(how="any")
 
         time, mag, error = [df[col].values for col in FEET_COLUMNS[stage]]
         extracted_features = extract_features(time, mag, error)
@@ -137,7 +137,7 @@ def process_directory(input_dir: str, max_files: int = -1) -> None:
 def main() -> None:
 
     """
-    Extract features for all the files inside the respective folders (each directory is runned as an independent process)
+    Extract features for all the files inside the respective folders (each directory run as an independent process)
     """
 
     folders = [
@@ -146,10 +146,10 @@ def main() -> None:
         "_data/_TESS_lightcurves_outliercleaned",
     ]
 
-    # process_directory("_data/_TESS_lightcurves_raw", max_files=-1)
+    process_directory("_data/_TESS_lightcurves_median_after_detrended", max_files=-1)
 
-    with mp.Pool(3) as pool:
-        pool.map(process_directory, folders)
+    # with mp.Pool(3) as pool:
+    #     pool.map(process_directory, folders)
 
 
 if __name__ == "__main__":

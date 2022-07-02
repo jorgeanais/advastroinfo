@@ -95,7 +95,7 @@ def process_directory(input_dir: str) -> None:
             sep=SEPARATOR[stage],
             dtype=np.float64,
             na_values=NANVALUES,
-        ).dropna(how="all")
+        ).dropna(how="any")
 
         time, mag, error = [df[col].values for col in FEET_COLUMNS[stage]]
         extracted_features = extract_features(time, mag, error)
