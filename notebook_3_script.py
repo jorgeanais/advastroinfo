@@ -146,10 +146,10 @@ def main() -> None:
         "_data/_TESS_lightcurves_outliercleaned",
     ]
 
-    process_directory("_data/_TESS_lightcurves_median_after_detrended", max_files=-1)
+    # process_directory("_data/_TESS_lightcurves_raw", max_files=-1)
 
-    # with mp.Pool(3) as pool:
-    #     pool.map(process_directory, folders)
+    with mp.Pool(3) as pool:
+        pool.map(process_directory, folders)
 
 
 if __name__ == "__main__":
