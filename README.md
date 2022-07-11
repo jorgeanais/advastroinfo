@@ -18,6 +18,8 @@ Folders `_data` and `outputs` are not included in this repository due to its lar
 ### Scripts
 1. `script_extract_features.py`: Extract features from all lc data, using feet + custom versions of AndersonDarling stat and Stetson K-index. For each version of the lc it produces a table with the object name, variability type and features values. Results are available at `selected_results/nb_3/`.
 2. `script_corner_plots.py`: Using the tables generated before, it produces corner plots for each variability type individually. Results are available at `selected_results/nb_4/`.
+3. `script_clustering.py` and `script_pipeline.py`: Script used to perform K-mean algorithm.
+4. `script_nb7.py`: Script used to perform RandomForestClassifier using K-fold. Confusion matrix plot is available at  `selected_results/nb_7/`.
 
 ## Amount of objects per stage and variability type
 
