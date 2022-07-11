@@ -6,8 +6,9 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, FunctionTransformer
 
 
 FEATURES = [
@@ -25,6 +26,7 @@ FEATURES = [
         "MaxSlope",
     ]
 
+
 data = {
         "raw": pd.read_csv(
             "outputs/nb3/features__TESS_lightcurves_raw.csv"
@@ -36,6 +38,16 @@ data = {
             "outputs/nb3/features__TESS_lightcurves_outliercleaned.csv"
         ),
     }
+
+
+def replace_nan_values(X: np.ndarray) -> np.ndarray:
+    """
+    Replace nan values with 0.
+    """
+    return np.nan_to_num(X)
+
+transformer_nan = FunctionTransformer(replace_nan_values)
+
 
 # Read data
 df = data["outlier_cleaned"]
@@ -49,42 +61,14 @@ all_features.remove("object_id")
 X = df[all_features].values
 y = df["type"].values
 
-# Xtrain, Xtest, ytrain, ytest = train_test_split(X, y, test_size=0.25)
-# kmeans = KMeans(n_clusters=10, random_state=0).fit(Xtrain)
-# y_pred = kmeans.predict(Xtrain)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)
 
+# Define the procesing pipeline
+pipe = make_pipeline(StandardScaler(), transformer_nan, PCA(n_components=5), KMeans(n_clusters=7))
+pipe.fit(X_train, y_train)
+y_pred = pipe.predict(X_test)
 
-# Normalize data
-scaler = StandardScaler().fit(X)
-X_scaled = scaler.transform(X)  # Problems with NAN values!!!
-# Detect nan values np.isinf
-bad_indices = np.where(np.isnan(X_scaled))
-
-# Replace nan values with mean # np.nanmean(X_scaled, axis=0) # np.nanmean(X_scaled, axis=0)
-X_scaled[bad_indices] = 0. 
-
-# PCA 
-pca = PCA(n_components=10)
-X_pca = pca.fit_transform(X_scaled)
-
-
-# Search for best K
-sum_of_squared_distances = []
-k_range = range(1, 20)
-
-for num_clusters in k_range:
-    kmeans = KMeans(n_clusters=num_clusters)
-    kmeans.fit(X_pca)
-    sum_of_squared_distances.append(kmeans.inertia_)
-
-plt.plot(k_range, sum_of_squared_distances, 'bx-')
-plt.xlabel("Values of K")
-plt.ylabel("Sum of squared distances")
-plt.title("Elbow Method")
-plt.show()
-
-# From the results I selected k=7
-kmeans = KMeans(n_clusters=7)
-kmeans.fit(X_pca)
-y_pred = kmeans.predict(X_pca)
+# Print confusion matrix for test
+df = pd.DataFrame({"type": y_test, "pred": y_pred, "ones": np.ones(y_test.shape)})
+print(df.pivot_table(values='ones', index='type', columns='pred', aggfunc='sum').fillna(0))
 
