@@ -1,6 +1,7 @@
 """
-This script compute Random Forest classifier using also kFold cross validation.
+This script compute Random Forest classifier using also StratifiedKFold cross validation.
 The result is a confusion matrix.
+Results are very similar to the ones obtained in the previous script (script_nb7.py).
 """
 
 import matplotlib.pyplot as plt
@@ -11,7 +12,7 @@ from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import confusion_matrix
-from sklearn.model_selection import train_test_split, KFold
+from sklearn.model_selection import train_test_split, KFold, StratifiedKFold
 from sklearn.pipeline import make_pipeline
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, FunctionTransformer
@@ -69,7 +70,7 @@ y = df["type"].values
 # Following Instructions from Notebook 7 ########################################
 
 folds = 10
-k_fold = KFold(folds, shuffle=True, random_state=1)
+k_fold = StratifiedKFold(folds, shuffle=True, random_state=1)   # Now using Stratified KFold
 
 predicted_targets = np.array([])
 actual_targets = np.array([])
@@ -78,7 +79,7 @@ input_folds = np.empty(folds, dtype=object)
 result_folds = np.empty(folds, dtype=object)
 
 fold = 0
-for train_ix, test_ix in k_fold.split(X):
+for train_ix, test_ix in k_fold.split(X, y):
     train_x, train_y, test_x, test_y = X[train_ix], y[train_ix], X[test_ix], y[test_ix]
 
     # print('X size: ', X.size)

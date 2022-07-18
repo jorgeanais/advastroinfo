@@ -13,6 +13,9 @@ Folders `_data` and `outputs` are not included in this repository due to its lar
 4. `notebook_3.ipynb`: Light curve features (II)
 5. `notebook_4.ipynb`: Recap
 6. `notebook_5.ipynb`: Machine Learning: Intro to Scikit-Learn
+7. `notebook_6.ipynb`: Machine Learning: Intro to Scikit-Learn
+8. `notebook_7.ipynb`: Supervised Classification, Data Processing Pipelines
+9. `notebook_8.ipynb`: Optimizing Source Code
 
 
 ### Scripts
@@ -20,6 +23,8 @@ Folders `_data` and `outputs` are not included in this repository due to its lar
 2. `script_corner_plots.py`: Using the tables generated before, it produces corner plots for each variability type individually. Results are available at `selected_results/nb_4/`.
 3. `script_clustering.py` and `script_pipeline.py`: Script used to perform K-mean algorithm.
 4. `script_nb7.py`: Script used to perform RandomForestClassifier using K-fold. Confusion matrix plot is available at  `selected_results/nb_7/`.
+5. `script_nb8.py`: Same as `script_nb7.py` but using StratifiedKFold. Confusion matrix plot is available at  `selected_results/nb_8/`.
+
 
 ## Amount of objects per stage and variability type
 
