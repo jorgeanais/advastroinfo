@@ -62,3 +62,6 @@ Folders `_data` and `outputs` are not included in this repository due to its lar
 | Rotating   | ROT     | Classical T Tauri stars showing periodic variability due to spots. |  790 |              790 |           790 |
 | Rotating   | RS      | RS Canum Venaticorum-type binary systems.                          |   18 |               18 |            18 |
 
+## Random Forest Confusion matrix
+
+![Confusion matrix](selected_results/supervised/CM_StratifiedKFold.png "Confusion matrix")

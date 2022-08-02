@@ -292,7 +292,7 @@ make_confusion_matrix(
 )
 
 plt.tight_layout()
-plt.savefig("outputs/supervised_results/CM_StratifiedKFold.pdf")
+plt.savefig("outputs/supervised_results/CM_StratifiedKFold.png")
 plt.show()
 
 
