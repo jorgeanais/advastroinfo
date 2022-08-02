@@ -62,7 +62,7 @@ all_features.remove("StetsonK")
 X = df[all_features].values
 y = df["type"].values
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25)  #9:1
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1)  #9:1
 
 # Define the procesing pipeline
 pipe = make_pipeline(
@@ -73,9 +73,13 @@ y_pred = pipe.predict(X_test)
 
 # Print confusion matrix for test
 df = pd.DataFrame({"type": y_test, "pred": y_pred, "ones": np.ones(y_test.shape)})
-print(
-    df.pivot_table(values="ones", index="type", columns="pred", aggfunc="sum").fillna(0)
-)
+cm = df.pivot_table(values="ones", index="type", columns="pred", aggfunc="sum").fillna(0)
+cm.to_csv("outputs/nb8/CM_semisupervised.csv")
+print(cm)
+cm_percentage = cm.apply(lambda x: x/x.sum()*100, axis=1)
+print(cm_percentage)
+cm_percentage.to_csv("outputs/nb8/CM_percent_semisupervised.csv")
+
 
 # print()
 # print()

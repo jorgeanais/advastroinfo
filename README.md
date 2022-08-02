@@ -12,10 +12,12 @@ Folders `_data` and `outputs` are not included in this repository due to its lar
 3. `notebook_2.ipynb`: Light curve features (I): Fourier transformation, Lomb-Scargle Periodogram, and the feature extraction from the `feets` package
 4. `notebook_3.ipynb`: Light curve features (II)
 5. `notebook_4.ipynb`: Recap
-6. `notebook_5.ipynb`: Machine Learning: Intro to Scikit-Learn
-7. `notebook_6.ipynb`: Machine Learning: Intro to Scikit-Learn
-8. `notebook_7.ipynb`: Supervised Classification, Data Processing Pipelines
-9. `notebook_8.ipynb`: Optimizing Source Code
+6. `notebook_5.ipynb`: Machine Learning: Intro to Scikit-Learn (example: iris dataset, Scikit-Lear estimator object, Supervised learning: k-nearest neighbors, model validation, confusion matrix, )
+7. `notebook_6.ipynb`: Machine Learning: Intro to Scikit-Learn (Binary classification, ROC, Completeness vs Efficiency, Multiclass classifiers, feature scaling, Random Forest, k-Fold verification)
+8. `notebook_7.ipynb`: Supervised Classification, Data Processing Pipelines. Data processing pipelines.
+9. `notebook_8.ipynb`: Optimizing Source Code: Monitoring code execution time, Avoid slow program/structures, compiled code Cython, Reusing data structures (serializing with pickle), memoization, parallelization.  Imbalance datasets: stratified k-fold cross-validation.
+10. `notebook_9.ipynb`: Python plotting best practices.
+
 
 
 ### Scripts
@@ -28,27 +30,28 @@ Folders `_data` and `outputs` are not included in this repository due to its lar
 
 ## Amount of objects per stage and variability type
 
-| Type    | Raw  | Median Detrended | Outlier clean |
-|---------|------|------------------|---------------|
-| ACV     | 21   | 21               | 21            |
-| CEP     | 22   | 22               | 22            |
-| DCEP    | 77   | 77               | 77            |
-| DCEP-FU | 10   | 10               | 10            |
-| DCEPS   | 6    | 6                | 6             |
-| DSCT    | 71   | 71               | 71            |
-| E       | 8    | 8                | 8             |
-| EA      | 447  | 447              | 447           |
-| EB      | 121  | 121              | 121           |
-| EC      | 124  | 124              | 124           |
-| ED      | 54   | 54               | 54            |
-| EW      | 1092 | 1092             | 1092          |
-| HADS    | 31   | 31               | 31            |
-| L       | 236  | 236              | 236           |
-| ROT     | 790  | 790              | 790           |
-| RR      | 6    | 6                | 6             |
-| RRAB    | 443  | 443              | 443           |
-| RRAB_BL | 55   | 55               | 55            |
-| RRC     | 203  | 203              | 203           |
-| RRD     | 23   | 23               | 23            |
-| RS      | 18   | 18               | 18            |
-| SR      | 992  | 992              | 992           |
+| Main Group | Type    | Description                                                        | Raw  | Median Detrended | Outlier clean |
+|------------|---------|--------------------------------------------------------------------|------|------------------|---------------|
+| Eclipsing  | E       | Eclipsing binary systems                                           |    8 |                8 |             8 |
+| Eclipsing  | EA      | beta Persei-type (Algol) eclipsing systems                         |  447 |              447 |           447 |
+| Eclipsing  | EB      | beta Lyrae-type eclipsing systems                                  |  121 |              121 |           121 |
+| Eclipsing  | EC      | Contact binaries                                                   |  124 |              124 |           124 |
+| Eclipsing  | ED      | Detached eclipsing binaries                                        |   54 |               54 |            54 |
+| Eclipsing  | EW      | W Ursae Majoris-type eclipsing variables                           | 1092 |             1092 |          1092 |
+| Pulsating  | CEP     | Cepheids                                                           |   22 |               22 |            22 |
+| Pulsating  | DCEP    | Classical Cepheids                                                 |   77 |               77 |            77 |
+| Pulsating  | DCEP-FU | Fundamental mode classical Cepheids                                |   10 |               10 |            10 |
+| Pulsating  | DCEPS   | delta Cep variables having light amplitudes                        |    6 |                6 |             6 |
+| Pulsating  | DSCT    | Variables of the delta Scuti type                                  |   71 |               71 |            71 |
+| Pulsating  | HADS    | High Amplitude delta Scuti stars.                                  |   31 |               31 |            31 |
+| Pulsating  | L       | Slow irregular variables                                           |  236 |              236 |           236 |
+| Pulsating  | RR      | Variables of the RR Lyrae type                                     |    6 |                6 |             6 |
+| Pulsating  | RRAB    | RR Lyrae variables with asymmetric light curves                    |  443 |              443 |           443 |
+| Pulsating  | RRAB_BL | RR Lyrae stars showing the Blazhko effect                          |   55 |               55 |            55 |
+| Pulsating  | RRC     | RR Lyrae variables with nearly symmetric light curves              |  203 |              203 |           203 |
+| Pulsating  | RRD     | Double-mode RR Lyrae stars                                         |   23 |               23 |            23 |
+| Pulsating  | SR      | Semi-regular variables                                             |  992 |              992 |           992 |
+| Rotating   | ACV     | alpha2 Canum Venaticorum variables.                                |   21 |               21 |            21 |
+| Rotating   | ROT     | Classical T Tauri stars showing periodic variability due to spots. |  790 |              790 |           790 |
+| Rotating   | RS      | RS Canum Venaticorum-type binary systems.                          |   18 |               18 |            18 |
+

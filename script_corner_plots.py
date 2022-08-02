@@ -6,18 +6,18 @@ import matplotlib.lines as mlines
 
 
 FEATURES = [
-        "Amplitude",
+        "Amplitude", # -
         "Mean",
-        #"Beyond1Std",
+        "Beyond1Std",
         "FluxPercentileRatioMid35",
-        "Freq1_harmonics_amplitude_0",
-        # "Freq2_harmonics_amplitude_0",
-        # "Skew",
-        "PeriodLS",
-        # "SmallKurtosis",
+        "Freq1_harmonics_amplitude_0",  # Periodic
+        "Freq2_harmonics_amplitude_0",  # Periodic
+        "Skew",
+        "PeriodLS",  # Periodic
+        "SmallKurtosis",  # -
         "Anderson_Darling_",
         "Stetson_K_",
-        # "MaxSlope",
+        # "MaxSlope",  # -
     ]
 
 
@@ -40,7 +40,11 @@ def main():
     variability_types = list(data["raw"]["type"].unique())
 
     for vtype in variability_types:
-        cornerplot_by_variability_type(vtype, data, FEATURES)
+        try:
+            cornerplot_by_variability_type(vtype, data, FEATURES)
+        except:
+            print(f"{vtype} failed")
+            continue
 
 
 def cornerplot_by_variability_type(
@@ -88,9 +92,10 @@ def cornerplot_by_variability_type(
             labels=cols,
             quantiles=[],
             show_titles=True,
-            title_kwargs={"fontsize": 8},
+            title_kwargs={"fontsize": 12},
             color=color,
             fig=fig,
+            fill_contours=False
         )
     
     # https://stackoverflow.com/questions/56590009/how-to-format-the-corner-plot-in-python
@@ -104,7 +109,7 @@ def cornerplot_by_variability_type(
         loc="upper right"
     )
     plt.suptitle(f"{vtype}", fontsize=14)
-    plt.savefig(f"outputs/nb4/cornerplot_{vtype}.png")
+    plt.savefig(f"outputs/nb4/cornerplot_{vtype}.pdf")
     plt.close()
 
 

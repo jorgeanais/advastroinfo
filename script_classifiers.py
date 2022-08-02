@@ -17,6 +17,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, FunctionTransformer
 
+from sklearn import svm
 
 SELECTED_FEATURES = [
     "Amplitude",
@@ -64,13 +65,13 @@ all_features.remove("object_id")
 all_features.remove("AndersonDarling")
 all_features.remove("StetsonK")
 
-X = df[all_features].values
+X = df[all_features].values ## all_features
 y = df["type"].values
 
 # Following Instructions from Notebook 7 ########################################
 
 folds = 10
-k_fold = StratifiedKFold(folds, shuffle=True, random_state=2)   # Now using Stratified KFold
+k_fold = StratifiedKFold(folds, shuffle=True, random_state=1)   # Now using Stratified KFold
 
 predicted_targets = np.array([])
 actual_targets = np.array([])
@@ -82,17 +83,25 @@ fold = 0
 for train_ix, test_ix in k_fold.split(X, y):
     train_x, train_y, test_x, test_y = X[train_ix], y[train_ix], X[test_ix], y[test_ix]
 
+    # print('X size: ', X.size)
+    # print('test_x size: ', test_x.size)
+
+    # Fit the classifier
+    # classifier = svm.SVC().fit(train_x, train_y)
 
     print("Fold: ", fold)
+    # print(np.unique(test_y, return_counts=True))
 
-    # Feature Scaling https://stats.stackexchange.com/questions/27627/normalization-prior-to-cross-validation
-    scaler = StandardScaler()  
+    # Feature Scaling
+    scaler = StandardScaler()
     train_x = np.nan_to_num(scaler.fit_transform(train_x))
     test_x = np.nan_to_num(scaler.transform(test_x))
 
     classifier = RandomForestClassifier(
         n_estimators=10, criterion="entropy", random_state=42
     )
+    # classifier = svm.SVC()
+
     classifier.fit(train_x, train_y)
 
     # Predict the labels of the test set samples
@@ -108,25 +117,19 @@ for train_ix, test_ix in k_fold.split(X, y):
     fold = fold + 1
 
 
-print(np.unique(actual_targets, return_counts=True))
+# print(np.unique(actual_targets, return_counts=True))
 
 # Print confusion matrix for test
-df = pd.DataFrame({"actual": actual_targets, "pred": predicted_targets, "ones": np.ones(actual_targets.shape)})
-print(
-    df.pivot_table(values="ones", index="actual", columns="pred", aggfunc="sum").fillna(0)
-)
+#df = pd.DataFrame({"actual": actual_targets, "pred": predicted_targets, "ones": np.ones(actual_targets.shape)})
+#print(
+#    df.pivot_table(values="ones", index="actual", columns="pred", aggfunc="sum").fillna(0)
+#)
 
 actual_labels = np.unique(actual_targets)  # In case a class is not present in the actual targets
-cnf_matrix = confusion_matrix(actual_targets, predicted_targets)  # labels=actual_labels
+cnf_matrix = confusion_matrix(actual_targets, predicted_targets, labels=actual_labels)
 
-print("-----------")
-print(actual_targets)
-print("-----------")
-print(predicted_targets)
-print("-----------")
-print(cnf_matrix)
-print("-----------")
-print(confusion_matrix(actual_targets, predicted_targets))
+
+# print(cnf_matrix)
 
 
 # here we calculate the scores for all three classes to report the classifier performance
@@ -177,9 +180,7 @@ metrics_df = pd.DataFrame(
     }, index=actual_labels
 )
 
-metrics_df.to_csv("outputs/nb8/metrics_StratifiedKFold.csv")
 print(metrics_df)
-
 
 # reuse plotting code from notebook 5
 
@@ -240,7 +241,7 @@ def make_confusion_matrix(
     title:         Title for the heatmap. Default is None.
     """
 
-    cf = to_density(cf_)
+    cf = to_density(cf_) 
 
     # Generate the labels for the matrix elements:
     blanks = ["" for i in range(cf.size)]
@@ -290,18 +291,13 @@ def make_confusion_matrix(
 # Make a confusion matrix plot for 10-fold cross-validation:
 
 make_confusion_matrix(
-    cnf_matrix,
-    xlabel="Predicted",
-    ylabel="True",
+    cnf_matrix.T,
+    xlabel="True label",
+    ylabel="Predicted label",
     categories_x=actual_labels,
     categories_y=actual_labels,
     count=True,
-    figsize=(12, 12),
+    figsize=(6, 6),
 )  # categories_x=all_features,categories_y=all_features
-
-plt.tight_layout()
-plt.savefig("outputs/nb8/CM_StratifiedKFold.pdf")
 plt.show()
 
-
-# print("Missing classes: ", set(np.unique(df["type"])) - set(actual_labels))
