@@ -21,11 +21,18 @@ Folders `_data` and `outputs` are not included in this repository due to its lar
 
 
 ### Scripts
+0. The code used to plot the ligthcurves is available at `notebook_1b.ipynb` and results are available at `selected_results/nb_1b/`.
 1. `script_extract_features.py`: Extract features from all lc data, using feet + custom versions of AndersonDarling stat and Stetson K-index. For each version of the lc it produces a table with the object name, variability type and features values. Results are available at `selected_results/nb_3/`.
 2. `script_corner_plots.py`: Using the tables generated before, it produces corner plots for each variability type individually. Results are available at `selected_results/nb_4/`.
-3. `script_clustering.py` and `script_pipeline.py`: Script used to perform K-mean algorithm.
-4. `script_nb7.py`: Script used to perform RandomForestClassifier using K-fold. Confusion matrix plot is available at  `selected_results/nb_7/`.
-5. `script_nb8.py`: Same as `script_nb7.py` but using StratifiedKFold. Confusion matrix plot is available at  `selected_results/nb_8/`.
+3. `script_semisupervised.py`: Semi-supervised learning. Results are in `selected_results/semisupervised/`.
+4. `script_supervised.py`: Application of random forest classification and feature importance. Results are in `selected_results/supervised/`.
+
+
+### Auxiliary scripts
+1. `script_clustering.py` and `script_pipeline.py`: Script used to fine tune K-mean algorithm.
+2. `script_nb7.py`: Script used to test RandomForestClassifier using K-fold. Confusion matrix plot is available at  `selected_results/nb_7/`.
+3. `script_nb8.py`: Same as `script_nb7.py` but using StratifiedKFold. Confusion matrix plot is available at  `selected_results/nb_8/`.
+
 
 
 ## Amount of objects per stage and variability type
